@@ -12,7 +12,18 @@ module.exports.getUser = (req, res) => {
 
 module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
-
   User.create({ name, about, avatar })
+    .then(user => res.send(user))
+};
+
+module.exports.updateUser = (req, res) => {
+  const { name, about } = req.body;
+  User.findByIdAndUpdate({ name, about }, req.user._id)
+    .then(user => res.send(user))
+};
+
+module.exports.updateAvatar = (req, res) => {
+  const { avatar } = req.body;
+  User.findByIdAndUpdate({ avatar }, req.user._id)
     .then(user => res.send(user))
 };
