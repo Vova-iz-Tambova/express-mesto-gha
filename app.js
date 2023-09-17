@@ -14,5 +14,6 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 app.use('/users', require('./routes/users'));
+app.use('/cards', require('./routes/cards'));
 
 app.listen(3000);
