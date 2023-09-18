@@ -7,7 +7,7 @@ const app = express();
 app.use(helmet());
 app.use((req, res, next) => {
   req.user = {
-    _id: '650870fe9d227343d22bd2a6'
+    _id: '650870fe9d227343d22bd2a6',
   };
   next();
 });

@@ -6,21 +6,21 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Поле "name" должно быть заполнено'],
     minlength: [2, 'Минимальная длина поля "name" - 2'],
-    maxlength: [30, 'Максимальная длина поля "name" - 30']
+    maxlength: [30, 'Максимальная длина поля "name" - 30'],
   },
   about: {
     type: String,
     required: [true, 'Поле "about" должно быть заполнено'],
     minlength: [2, 'Минимальная длина поля "name" - 2'],
-    maxlength: [30, 'Максимальная длина поля "name" - 30']
+    maxlength: [30, 'Максимальная длина поля "name" - 30'],
   },
   avatar: {
     type: String,
     validate: {
       validator: (url) => validator.isURL(url),
-      message: 'Некорректный URL'
+      message: 'Некорректный URL',
     },
-    required: true
+    required: true,
   },
 }, { versionKey: false });
 
