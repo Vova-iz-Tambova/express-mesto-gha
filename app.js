@@ -1,7 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
-const NotFound = require('./errors/NotFound');
 
 const app = express();
 app.use(express.json());
@@ -18,8 +17,9 @@ mongoose.connect('mongodb://localhost:27017/mestodb');
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
 
-app.use('*', (req, res, next) => {
-  next(new NotFound('Страница не найдена'));
+app.use('/*', (req, res) => {
+  res.status(404)
+    .send({ message: '404: Not Found' });
 });
 
 app.listen(3000);
