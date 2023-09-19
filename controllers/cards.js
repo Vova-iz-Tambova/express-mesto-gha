@@ -30,7 +30,13 @@ module.exports.deleteCard = (req, res) => {
         res.send(card);
       }
     })
-    .catch((err) => res.status(500).send(err));
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(400).send(err);
+      } else {
+        res.status(500).send(err);
+      }
+    });
 };
 
 module.exports.likeCard = (req, res) => {
