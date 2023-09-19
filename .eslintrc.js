@@ -1,7 +1,9 @@
 module.exports = {
   env: {
     browser: true,
+    commonjs: true,
     es2021: true,
+    node: true,
   },
   extends: 'airbnb-base',
   overrides: [
@@ -19,7 +21,6 @@ module.exports = {
   ],
   parserOptions: {
     ecmaVersion: 'latest',
-    sourceType: 'module',
   },
   rules: {
     'no-underscore-dangle': [
