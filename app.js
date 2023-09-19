@@ -19,7 +19,7 @@ app.use('/cards', require('./routes/cards'));
 
 app.use('/*', (req, res) => {
   res.status(404)
-    .send({ message: '404: Not Found' });
+    .send({ message: 'Страница не найдена' });
 });
 
 app.listen(3000);
