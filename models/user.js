@@ -22,6 +22,19 @@ const userSchema = new mongoose.Schema({
     },
     required: true,
   },
+  email: {
+    type: String,
+    required: [true, 'Поле "email" должно быть заполнено'],
+    unique: [true, 'Данный "email" уже используется'],
+    validate: {
+      validator: (email) => validator.isEmail(email),
+      message: 'Некорректный email',
+    },
+  },
+  password: {
+    type: String,
+    required: [true, 'Поле "password" должно быть заполнено'],
+  },
 }, { versionKey: false });
 
 module.exports = mongoose.model('user', userSchema);
