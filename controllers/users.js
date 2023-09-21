@@ -106,7 +106,7 @@ module.exports.login = (req, res) => {
               res
                 .status(200)
                 .cookie('jwt', token, { httpOnly: true })
-                .send({ message: 'Всё верно!' });
+                .send({ token });
             }
           }).catch((err) => res.send(err));
       }
