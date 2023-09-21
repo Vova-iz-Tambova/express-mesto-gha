@@ -27,6 +27,25 @@ module.exports.getUser = (req, res) => {
     });
 };
 
+module.exports.getCurrentUser = (req, res) => {
+  User.findById(req.user._id)
+    .then((user) => {
+      if (!user) {
+        res.status(404)
+          .send({ message: 'Пользователь по указанному _id не найден' });
+      } else {
+        res.send(user);
+      }
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(400).send(err);
+      } else {
+        res.status(500).send(err);
+      }
+    });
+};
+
 module.exports.createUser = (req, res) => {
   const {
     name, about, avatar, email, password,
