@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
 module.exports.getUsers = (req, res) => {
@@ -28,9 +29,9 @@ module.exports.getUser = (req, res) => {
 
 module.exports.createUser = (req, res) => {
   const {
-    name, about, avatar, email, password
+    name, about, avatar, email, password,
   } = req.body;
-  bcrypt.hash(req.body.password, 10)
+  bcrypt.hash(password, 10)
     .then((hash) => User.create({
       name, about, avatar, email, password: hash,
     }))
@@ -85,4 +86,30 @@ module.exports.updateAvatar = (req, res) => {
         res.status(500).send(err);
       }
     });
+};
+
+module.exports.login = (req, res) => {
+  const { email, password } = req.body;
+  return User.findOne({ email }).select('+password')
+    .then((user) => {
+      if (!user) {
+        res.status(401)
+          .send({ message: 'Неправильные почта или пароль' });
+      } else {
+        bcrypt.compare(password, user.password)
+          .then((matched) => {
+            if (!matched) {
+              res.status(401)
+                .send({ message: 'Неправильные почта или пароль' });
+            } else {
+              const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
+              res
+                .status(200)
+                .cookie('jwt', token, { httpOnly: true })
+                .send({ message: 'Всё верно!' });
+            }
+          }).catch((err) => res.send(err));
+      }
+    })
+    .catch((err) => res.send(err));
 };
