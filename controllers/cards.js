@@ -26,6 +26,8 @@ module.exports.deleteCard = (req, res) => {
       if (!card) {
         res.status(404)
           .send({ message: 'Карточка с указанным _id не найдена' });
+      } else if (!card.owner.equals(req.user._id)) {
+        res.status(403).send({ message: 'Доступ запрещен' });
       } else {
         res.send(card);
       }

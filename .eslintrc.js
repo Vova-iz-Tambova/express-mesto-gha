@@ -29,6 +29,7 @@ module.exports = {
         allow: ['_id', '__dirname'],
       },
     ],
-    'no-console': false,
+    'no-console': 'off',
+    'func-names': 'off',
   },
 };
