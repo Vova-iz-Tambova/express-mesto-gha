@@ -1,10 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
-const { errors } = require('celebrate');
+const { errors, celebrate, Joi } = require('celebrate');
+// const { errors } = require('celebrate');
 const { createUser, login } = require('./controllers/users');
 const auth = require('./middlewares/auth');
-const { celebrate, Joi } = require('celebrate');
 
 const app = express();
 app.use(express.json());
