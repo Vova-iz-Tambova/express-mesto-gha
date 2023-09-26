@@ -1,16 +1,27 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
+const { rateLimit } = require('express-rate-limit');
 const { errors, celebrate, Joi } = require('celebrate');
 // const { errors } = require('celebrate');
 const { createUser, login } = require('./controllers/users');
 const auth = require('./middlewares/auth');
+// const NotFoundError = require('../errors/not-found-err');
 
 const app = express();
 app.use(express.json());
 app.use(helmet());
 
-mongoose.connect('mongodb://localhost:27017/mestodb');
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  limit: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+  standardHeaders: 'draft-7', // Set `RateLimit` and `RateLimit-Policy` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  // store: ... , // Use an external store for more precise rate limiting
+});
+app.use(apiLimiter);
+
+mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 
 app.post('/signin', celebrate({
   body: Joi.object().keys({
