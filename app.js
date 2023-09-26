@@ -6,11 +6,7 @@ const { errors, celebrate, Joi } = require('celebrate');
 // const { errors } = require('celebrate');
 const { createUser, login } = require('./controllers/users');
 const auth = require('./middlewares/auth');
-// const NotFoundError = require('../errors/not-found-err');
-
-const app = express();
-app.use(express.json());
-app.use(helmet());
+const NotFoundError = require('./errors/not-found-err');
 
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -19,6 +15,11 @@ const apiLimiter = rateLimit({
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
   // store: ... , // Use an external store for more precise rate limiting
 });
+
+const app = express();
+app.use(express.json());
+app.use(helmet());
+
 app.use(apiLimiter);
 
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
@@ -34,7 +35,7 @@ app.post('/signup', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: Joi.string(),
+    avatar: Joi.string().regex(/https?:\/\/(\w{3}\.)?[1-9a-z\-.]{1,}\w\w(\/[1-90a-z.,_@%&?+=~/-]{1,}\/?)?#?/),
     email: Joi.string().required().email(),
     password: Joi.string().required(),
   }),
@@ -43,12 +44,11 @@ app.post('/signup', celebrate({
 app.use('/users', auth, require('./routes/users'));
 app.use('/cards', auth, require('./routes/cards'));
 
-app.use('/*', (req, res) => {
-  res.status(404)
-    .send({ message: 'Страница не найдена' });
-});
-
 app.use(errors());
+
+app.use('/*', () => {
+  throw new NotFoundError('Страница не найдена');
+});
 
 app.use((err, req, res, next) => {
   // если у ошибки нет статуса, выставляем 500
